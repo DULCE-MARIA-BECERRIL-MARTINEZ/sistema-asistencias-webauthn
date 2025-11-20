@@ -10,9 +10,9 @@ export async function POST(req) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 
-    // --- Definición manual de dominio ---
-    const NG_ROK_DOMAIN = "roger-bausond-basically.ngrok-free.dev";
-    const EXPECTED_ORIGIN = `https://${NG_ROK_DOMAIN}`; // Origen completo con HTTPS
+    // 🚨 DOMINIO DE VERCEL DEFINIDO AQUI
+    const VERCEL_DOMAIN = "sistema-asistencias-mu.vercel.app";
+    const EXPECTED_ORIGIN = `https://${VERCEL_DOMAIN}`; // Origen completo con HTTPS
 
     // Obtener challenge
     const [challenges] = await pool.query(
@@ -29,8 +29,8 @@ export async function POST(req) {
     // Validación WebAuthn
     const verification = await verifyRegistrationResponse({
       expectedChallenge: challenge,
-      expectedOrigin: EXPECTED_ORIGIN, // Usar el origen completo con HTTPS
-      expectedRPID: NG_ROK_DOMAIN, // Usar solo el dominio (RPID)
+      expectedOrigin: EXPECTED_ORIGIN, // Usar el origen completo con HTTPS de Vercel
+      expectedRPID: VERCEL_DOMAIN, // Usar solo el dominio (RPID) de Vercel
       response: attestation,
       requireUserVerification: true, 
     });

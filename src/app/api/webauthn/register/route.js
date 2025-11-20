@@ -55,12 +55,13 @@ export async function POST(req) {
     }));
 
     // --- Generar Opciones WebAuthn ---
-    const NG_ROK_DOMAIN = "roger-bausond-basically.ngrok-free.dev"; // ¡Asegúrate que este es tu dominio!
+    // 🚨 DOMINIO DE VERCEL DEFINIDO AQUI
+    const VERCEL_DOMAIN = "sistema-asistencias-mu.vercel.app"; 
     const USER_ID_BUFFER = new TextEncoder().encode(String(user.usuario_id));
 
     const options = await generateRegistrationOptions({
       rpName: "Sistema de Asistencias",
-      rpID: NG_ROK_DOMAIN, // Usar dominio HTTPS (Ngrok)
+      rpID: VERCEL_DOMAIN, // Usar dominio de Vercel
       userID: USER_ID_BUFFER,
       userName: user.nombre || "usuario",
       userDisplayName: user.nombre || "Usuario",
@@ -70,14 +71,14 @@ export async function POST(req) {
       authenticatorSelection: {
         residentKey: "required",
         userVerification: "required",
-        // 🚨 CAMBIO A CROSS-PLATFORM: Acepta credenciales sincronizadas (Nube/Teléfono)
+        // Permite el uso de credenciales sincronizadas (Nube/Teléfono)
         authenticatorAttachment: 'cross-platform', 
       },
       supportedAlgorithmIDs: [-7, -257],
       excludeCredentials,
     });
 
-    // 4. GUARDAR CHALLENGE CORRECTAMENTE 
+    // 4. GUARDAR CHALLENGE 
     await pool.query(
         "DELETE FROM webauthn_challenges WHERE user_id = ?",
         [idUsuario]
